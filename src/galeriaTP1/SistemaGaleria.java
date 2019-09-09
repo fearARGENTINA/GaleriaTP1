@@ -1,11 +1,12 @@
 package galeriaTP1;
 
-import java.io.FileReader;
+import java.io.File;
 import java.io.BufferedReader;
-import java.io.FileWriter;
-import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.FileInputStream;
 
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -17,13 +18,12 @@ public class SistemaGaleria {
 		String line = null;
 		
 		try {
-			FileReader file = new FileReader(archivo);
+			File file = new File(archivo);
 			
-			BufferedReader buffer = new BufferedReader(file);
+			BufferedReader buffer = new BufferedReader(new InputStreamReader(new FileInputStream(file),"UTF-8"));
 			
 			while((line = buffer.readLine()) != null ) {
 				String data[] = line.split("\\t+");
-				
 				for( int i = 0; i < data.length; i++ )
 					data[i] = data[i].trim();
 				
@@ -57,16 +57,14 @@ public class SistemaGaleria {
 	
 	private void actualizarRegistro() {
 		try {
-			FileWriter file = new FileWriter(archivo, false);
-			
-			BufferedWriter buffer = new BufferedWriter(file);
-			
+			FileOutputStream  file = new FileOutputStream(archivo, false);
+						
 			for( RegistroLocal reg : registro ) {
-				System.out.println("Subiendo local: " + reg.getLocal());
-				buffer.write(reg.toString() + "\n");
+				String s = reg.toString() + "\n";
+				file.write(s.getBytes("UTF-8"));
 			}
 			
-			buffer.close();
+			file.close();
 		}
 		catch(FileNotFoundException ex) {
 	        System.out.println("No se pudo abrir el archivo '" + archivo + "'");                
@@ -93,7 +91,7 @@ public class SistemaGaleria {
 		
 		sys.iniciarRegistro();
 		
-		System.out.println(sys.totalFacturado());		
+		System.out.println("Total facturado: " + sys.totalFacturado());		
 		
 		sys.agregarLocal(new String[]{"ROBIN LELEU", "MARÍA ELENA", "1007", "MANUALIDADES EN ALPACA Y CUERO-RESINA", "0"});
 		
